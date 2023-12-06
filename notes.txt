@@ -1,0 +1,40 @@
+Mine - > Suga, Arun, Mahesh
+BombBurst - Sukumar, krishna
+flag, unflag, display - sowmiya, vidhya
+
+
+Mine -> params -> 
+BombBurst -> params ->
+flag, unflag -> params, display
+
+globals:
+    display -> 4x4 matrix initilly empty
+    db -> [
+        [B, 2, 1, _],
+        [2, B, 2, 1],
+        [1, 2, B, 2],
+        [_, 1, 2, B],
+    ]
+
+flags -> 4
+Main() {
+    row, col
+    while (true) {
+        row, col, functionality
+        switch (functionality) {
+            case M {
+                if (bomb(row, col)) {
+                    bombBurst(flags)
+                    return;
+                }
+                mine(bool, row, col)
+            }
+            case F {
+                flag();
+            }
+            case UF {
+                unflag();
+            }
+        }
+    }
+}
