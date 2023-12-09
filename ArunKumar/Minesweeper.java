@@ -3,6 +3,7 @@ import java.util.Scanner;
 
 public class Minesweeper {
     static int correct_result = 0;
+<<<<<<< HEAD
     static int flag_count = 0;
     static int no_of_bomb = 0;
     static int boardsize = 0;
@@ -25,23 +26,58 @@ public class Minesweeper {
             case "hard":
                 no_of_bomb += 10;
                 boardsize += 10;
+=======
+    static int flag_count=0;
+    static int no_of_bomb=0;
+    static int boardsize=0;
+    static char[][] displayArray ;
+    static char[][] dataArray;
+    static void difficultylevel(String str)
+    {
+        switch (str) {
+            case "easy":
+                System.out.println("You need to find 2 bomb");
+                no_of_bomb+=2;
+                boardsize+=5;
+                boardsetup();
+                break;
+            case "medium":
+                System.out.println("You need to find 3 bomb");
+                no_of_bomb+=3;
+                boardsize+=6;
+                boardsetup();
+                break;
+            case "hard":
+                System.out.println("You need to find 6 bomb");
+                no_of_bomb+=6;
+                boardsize+=8;
+>>>>>>> b857613e04a23882e4c6dda62972876d712f737b
                 boardsetup();
                 break;
         }
 
     }
+<<<<<<< HEAD
 
     static void boardsetup() {
         Random rn = new Random();
         isVisited = new boolean[boardsize][boardsize];
         dataArray = new char[boardsize][boardsize];
         displayArray = new char[boardsize][boardsize];
+=======
+    static void boardsetup()
+    {
+        Random rn=new Random();
+        dataArray=new char[boardsize][boardsize];
+        displayArray=new char[boardsize][boardsize];
+>>>>>>> b857613e04a23882e4c6dda62972876d712f737b
         for (int i = 0; i < boardsize; i++) {
             for (int j = 0; j < boardsize; j++) {
                 dataArray[i][j] = ' ';
                 displayArray[i][j] = '?';
             }
         }
+<<<<<<< HEAD
         for (int i = 0; i < no_of_bomb; i++) {
             int row = rn.nextInt(boardsize);
             int col = rn.nextInt(boardsize);
@@ -91,6 +127,70 @@ public class Minesweeper {
             }
 
         }
+=======
+      for (int i = 0; i <no_of_bomb; i++)
+        {  
+            int row=rn.nextInt(boardsize);
+            int col=rn.nextInt(boardsize);
+            if(dataArray[row][col]==' ')
+            {
+            dataArray[row][col]='B';
+            countBomb(row,col);
+            }
+            else if((col+1)!=boardsize && dataArray[row][col]=='B')
+            {
+            dataArray[row][col+1]='B';
+            countBomb(row,col+1);
+            }
+            else if((row+1)!=boardsize && dataArray[row][col+1]=='B')
+            {
+                dataArray[row+1][col]='B';
+                countBomb(row+1,col);
+            }
+            else if((row-1)!=-1 && dataArray[row+1][col]=='B')
+            {
+                dataArray[row-1][col]='B';
+                countBomb(row-1,col);
+            }
+            else if((col-1)!=-1 && dataArray[row-1][col]=='B')
+            {
+                dataArray[row][col-1]='B';
+                countBomb(row,col-1);
+            }
+            else
+            {
+                i--;
+            }
+        }  
+    }
+    static void countBomb(int bomb_row,int bomb_col)
+    {
+            
+            int row_st=(bomb_row-1<0)?bomb_row:bomb_row-1;
+            int row_nd=(bomb_row+1==boardsize)?bomb_row:bomb_row+1;
+            int col_st=(bomb_col-1<0)?bomb_col:bomb_col-1;
+            int col_nd=(bomb_col+1==boardsize)?bomb_col:bomb_col+1;
+            
+            for(int j=row_st;j<=row_nd;j++)
+            {
+                for(int k=col_st;k<=col_nd;k++)
+                {
+                    if(dataArray[j][k] >='1')
+                    {
+                        if(dataArray[j][k]!='B')
+                        {
+                            dataArray[j][k]=(char)(dataArray[j][k]+1);
+                        }
+                    }
+                    else
+                    {
+                        dataArray[j][k]='1';
+                    }
+                }
+            }
+        
+    
+>>>>>>> b857613e04a23882e4c6dda62972876d712f737b
     }
 
     static void flag(int row, int col) {
@@ -119,7 +219,10 @@ public class Minesweeper {
     }
 
     static void displayBoard() {
+<<<<<<< HEAD
         // System.out.println("_____________________");
+=======
+>>>>>>> b857613e04a23882e4c6dda62972876d712f737b
 
         for (int i = 0; i < boardsize; i++) {
             System.out.print("| ");
@@ -159,8 +262,13 @@ public class Minesweeper {
         }
     }
 
+<<<<<<< HEAD
     static void revealArea(int row, int col) {
         if (row == -1 || col == -1 || row == boardsize || col == boardsize) {
+=======
+    static void revealArea(int row, int col,boolean[][]isVisited) {
+        if (row == -1 || col == -1 || row ==boardsize || col == boardsize) {
+>>>>>>> b857613e04a23882e4c6dda62972876d712f737b
             return;
         }
         if (!isVisited[row][col]) {
@@ -170,6 +278,7 @@ public class Minesweeper {
             return;
         }
         isVisited[row][col] = false;
+<<<<<<< HEAD
         if (dataArray[row][row] != 'B')
             displayArray[row][col] = dataArray[row][col];
         revealArea(row - 1, col); // top
@@ -180,6 +289,17 @@ public class Minesweeper {
         revealArea(row - 1, col + 1); // vertical top right
         revealArea(row + 1, col - 1); // vertical bottom left
         revealArea(row + 1, col + 1); // vertical bottom right
+=======
+        displayArray[row][col] = dataArray[row][col];
+        revealArea(row - 1, col,isVisited); // top
+        revealArea(row, col - 1,isVisited); // left
+        revealArea(row, col + 1,isVisited); // right
+        revealArea(row + 1, col,isVisited); // bottom
+        revealArea(row - 1, col - 1,isVisited); // vertical top Left
+        revealArea(row - 1, col + 1,isVisited); // vertical top right
+        revealArea(row + 1, col - 1,isVisited); // vertical bottom left
+        revealArea(row + 1, col + 1,isVisited); // vertical bottom right
+>>>>>>> b857613e04a23882e4c6dda62972876d712f737b
         isVisited[row][col] = true;
     }
 
@@ -189,9 +309,16 @@ public class Minesweeper {
         System.out.println("enter difficulty level:ex(easy,medium,hard)");
         String difficulty = scan.nextLine();
         difficultylevel(difficulty);
+        boolean[][] isVisited=new boolean[boardsize][boardsize];
+        for (int i = 0; i <boardsize; i++) {
+            for (int j = 0; j <boardsize; j++) {
+                isVisited[i][j]=(dataArray[i][j]==' ');
+            }
+            
+        }
         int row, col;
         while (true) {
-            System.out.println("Enter the row and column input seperate by space (ex: 1 1)");
+            System.out.println("Enter the row and column input seperate by space and process(ex: 1 1 M)");
             row = scan.nextInt();
             col = scan.nextInt();
             String function = scan.next();
@@ -205,7 +332,7 @@ public class Minesweeper {
                         System.out.println("Game Over");
                         return;
                     }
-                    revealArea(row, col);
+                    revealArea(row, col,isVisited);
                     displayBoard();
                     break;
                 case ('F'):
