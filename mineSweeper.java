@@ -10,6 +10,7 @@ public class mineSweeper {
     static char[][] displayArray = { {} };
     static char[][] dataArray = { {} };
     static int[][] bombs = { {} };
+    static int size = 15;
 
     // static
     static void flag(int row, int col) {
@@ -62,15 +63,6 @@ public class mineSweeper {
         return dataArray[row][col] == 'B';
     }
 
-    // static void displayBoard() {
-    // for (int i = 0; i < displayArray.length; i++) {
-    // for (int j = 0; j < displayArray.length; j++) {
-    // System.out.print(displayArray[i][j] + " ");
-    // }
-    // System.out.println();
-    // }
-    // }
-
     static void burstBomb() {
         int n = dataArray.length;
         int m = dataArray[0].length;
@@ -86,7 +78,7 @@ public class mineSweeper {
         }
     }
 
-    static char[][] calculateCellValue(int size, char[][] dataArray) {
+    static char[][] calculateCellValue(char[][] dataArray) {
         for (int everyBomb = 0; everyBomb < bombs.length; everyBomb++) {
             int rowEnd = bombs[everyBomb][0] + 1 < size ? bombs[everyBomb][0] + 1 : bombs[everyBomb][0];
             int row = bombs[everyBomb][0] - 1 >= 0 ? bombs[everyBomb][0] - 1 : bombs[everyBomb][0];
@@ -105,7 +97,7 @@ public class mineSweeper {
         return dataArray;
     }
 
-    static int[] getNearPosition(int row, int col, int size) {
+    static int[] getNearPosition(int row, int col) {
         if (col - 1 > 0 && dataArray[row][col - 1] != 'B') {
             return new int[] { row, col - 1 };
         } else if (col + 1 < size && dataArray[row][col + 1] != 'B') {
@@ -125,13 +117,13 @@ public class mineSweeper {
 
     }
 
-    static char[][] getBombs(char[][] dataArray, int bombCount, int size) {
+    static char[][] getBombs(char[][] dataArray, int bombCount) {
         Random random = new Random();
         for (int bomb = 0; bomb < bombCount; bomb++) {
             int row = random.nextInt(size);
             int col = random.nextInt(size);
             if (dataArray[row][col] == 'B') {
-                int[] temp = getNearPosition(row, col, size);
+                int[] temp = getNearPosition(row, col);
                 row = temp[0];
                 col = temp[1];
                 dataArray[row][col] = 'B';
@@ -146,34 +138,26 @@ public class mineSweeper {
         return dataArray;
     }
 
-    static char[][] generateDisplayArray(int size) {
-        char[][] resultDisplayArray = new char[size][size];
+    static void generateArrays(char[][] resultDataArray, char[][] resultDisplayArray) {
+        resultDataArray = new char[size][size];
+        resultDisplayArray = new char[size][size];
         for (int row = 0; row < size; row++) {
             for (int column = 0; column < size; column++) {
                 resultDisplayArray[row][column] = '?';
+                resultDataArray[row][column] = ' ';
             }
         }
-        return resultDisplayArray;
     }
 
-    static char[][] generateDataArray(int size) {
+    static char[][] generateDataArray() {
         // have to return char array bombs with calculation
         char[][] resultDataArray = new char[size][size];
-        for (int row = 0; row < size; row++) {
-            for (int col = 0; col < size; col++) {
-                resultDataArray[row][col] = ' ';
-            }
-        }
-        resultDataArray = getBombs(resultDataArray, (size / 2) + 3, size);
-        for (int i = 0; i < bombs.length; i++) {
-            System.out.print(bombs[i][0] + " ");
-            System.out.println(bombs[i][1]);
-        }
-        resultDataArray = calculateCellValue(size, resultDataArray);
+        resultDataArray = getBombs(resultDataArray, getNumberOfBombsToBePlaced());
+        resultDataArray = calculateCellValue(resultDataArray);
         return resultDataArray;
     }
 
-    static boolean[][] generateBooleanArray(int size) {
+    static boolean[][] generateBooleanArray() {
         boolean[][] boolArray = new boolean[size][size];
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
@@ -187,7 +171,7 @@ public class mineSweeper {
         return boolArray;
     }
 
-    static void revealArea(int row, int col, boolean[][] isVisisted, int size) {
+    static void revealArea(int row, int col, boolean[][] isVisisted) {
         if (row == -1 || col == -1 || row == size || col == size) {
             return;
         }
@@ -199,18 +183,18 @@ public class mineSweeper {
         }
         isVisisted[row][col] = false;
         displayArray[row][col] = dataArray[row][col];
-        revealArea(row - 1, col, isVisisted, size); // top
-        revealArea(row, col - 1, isVisisted, size); // left
-        revealArea(row, col + 1, isVisisted, size); // right
-        revealArea(row + 1, col, isVisisted, size); // bottom
-        revealArea(row - 1, col - 1, isVisisted, size); // top Left
-        revealArea(row - 1, col + 1, isVisisted, size); // top right
-        revealArea(row + 1, col - 1, isVisisted, size); // bottom left
-        revealArea(row + 1, col + 1, isVisisted, size); // bottom right
+        revealArea(row - 1, col, isVisisted); // top
+        revealArea(row, col - 1, isVisisted); // left
+        revealArea(row, col + 1, isVisisted); // right
+        revealArea(row + 1, col, isVisisted); // bottom
+        revealArea(row - 1, col - 1, isVisisted); // top Left
+        revealArea(row - 1, col + 1, isVisisted); // top right
+        revealArea(row + 1, col - 1, isVisisted); // bottom left
+        revealArea(row + 1, col + 1, isVisisted); // bottom right
         isVisisted[row][col] = true;
     }
 
-    static int getNumberOfBombsToBePlaced(int size) {
+    static int getNumberOfBombsToBePlaced() {
         return (size / 2) + 3;
     }
 
@@ -219,7 +203,6 @@ public class mineSweeper {
         Scanner scan = new Scanner(System.in);
         int row, col;
         String level = scan.nextLine();
-        int size = 15;
         if (level.equals("easy")) {
             size = 10; // 8 bombs
         } else if (level.equals("medium")) {
@@ -227,11 +210,11 @@ public class mineSweeper {
         } else if (level.equals("hard")) {
             size = 30; // 18 bombs
         }
-        bombs = new int[getNumberOfBombsToBePlaced(size)][2];
-        dataArray = generateDataArray(size);
+        bombs = new int[getNumberOfBombsToBePlaced()][2];
+        generateArrays(dataArray, displayArray);
+        dataArray = generateDataArray();
         displayDB();
-        displayArray = generateDisplayArray(size);
-        boolean[][] isVisisted = generateBooleanArray(size);
+        boolean[][] isVisisted = generateBooleanArray();
         while (true) {
             System.out.println("Enter the row and column input seperate by space (ex: 1 1)");
             row = scan.nextInt();
@@ -246,7 +229,7 @@ public class mineSweeper {
                         System.out.println("Game Over");
                         return;
                     }
-                    revealArea(row, col, isVisisted, size);
+                    revealArea(row, col, isVisisted);
                     displayBoard();
                     break;
                 case ('F'):
